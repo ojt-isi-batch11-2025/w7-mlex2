@@ -31,7 +31,7 @@ def predict(basedir, i, model):
     
     path = basedir+str(i)+'.JPG'
     
-    img = load_img(path,False,target_size=(img_width,img_height))
+    img = load_img(path,"rgb",target_size=(img_width,img_height))
         
     x = img_to_array(img)
     x = np.expand_dims(x, axis=0)
