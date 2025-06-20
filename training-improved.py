@@ -183,10 +183,10 @@ final_model = create_model(
 # Final model training
 history = final_model.fit(
     train_generator,
-    steps_per_epoch=nb_train_samples // batch_size,
-    epochs=epochs,
+    steps_per_epoch=nb_train_samples // best_params['batch_size'],
+    epochs=best_params['epochs'],
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size,
+    validation_steps=nb_validation_samples // best_params['batch_size'],
     callbacks=[early_stopping, model_checkpoint]
 )
 
