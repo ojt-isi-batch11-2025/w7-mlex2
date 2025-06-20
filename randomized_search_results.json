@@ -1,0 +1,61 @@
+{
+    "best_params": {
+        "model__learning_rate": 0.01,
+        "model__filters_3": 128,
+        "model__filters_2": 32,
+        "model__filters_1": 32,
+        "model__dropout_rate": 0.3,
+        "model__dense_units": 128
+    },
+    "best_score": 0.6222222222222222,
+    "cv_results": {
+        "params": [
+            "{'model__learning_rate': 0.1, 'model__filters_3': 128, 'model__filters_2': 64, 'model__filters_1': 64, 'model__dropout_rate': 0.4, 'model__dense_units': 256}",
+            "{'model__learning_rate': 0.01, 'model__filters_3': 128, 'model__filters_2': 32, 'model__filters_1': 32, 'model__dropout_rate': 0.3, 'model__dense_units': 128}",
+            "{'model__learning_rate': 0.1, 'model__filters_3': 64, 'model__filters_2': 128, 'model__filters_1': 16, 'model__dropout_rate': 0.5, 'model__dense_units': 32}",
+            "{'model__learning_rate': 0.0001, 'model__filters_3': 64, 'model__filters_2': 32, 'model__filters_1': 64, 'model__dropout_rate': 0.3, 'model__dense_units': 256}",
+            "{'model__learning_rate': 0.01, 'model__filters_3': 64, 'model__filters_2': 32, 'model__filters_1': 32, 'model__dropout_rate': 0.4, 'model__dense_units': 32}",
+            "{'model__learning_rate': 0.001, 'model__filters_3': 128, 'model__filters_2': 16, 'model__filters_1': 32, 'model__dropout_rate': 0.4, 'model__dense_units': 64}",
+            "{'model__learning_rate': 0.0001, 'model__filters_3': 128, 'model__filters_2': 128, 'model__filters_1': 16, 'model__dropout_rate': 0.5, 'model__dense_units': 64}",
+            "{'model__learning_rate': 0.01, 'model__filters_3': 64, 'model__filters_2': 64, 'model__filters_1': 32, 'model__dropout_rate': 0.4, 'model__dense_units': 128}",
+            "{'model__learning_rate': 0.0001, 'model__filters_3': 32, 'model__filters_2': 64, 'model__filters_1': 16, 'model__dropout_rate': 0.6, 'model__dense_units': 64}",
+            "{'model__learning_rate': 0.0001, 'model__filters_3': 128, 'model__filters_2': 32, 'model__filters_1': 16, 'model__dropout_rate': 0.6, 'model__dense_units': 128}"
+        ],
+        "mean_test_score": [
+            0.5,
+            0.6222222222222222,
+            0.4444444444444445,
+            0.5,
+            0.4444444444444445,
+            0.5666666666666668,
+            0.5666666666666668,
+            0.5555555555555555,
+            0.5,
+            0.5111111111111111
+        ],
+        "std_test_score": [
+            0.08164965809277258,
+            0.16629588385661961,
+            0.11331154474650633,
+            0.08164965809277258,
+            0.11331154474650633,
+            0.16996731711975951,
+            0.16996731711975951,
+            0.1133115447465063,
+            0.08164965809277258,
+            0.1257078722109418
+        ],
+        "rank_test_score": [
+            6,
+            1,
+            9,
+            6,
+            9,
+            2,
+            2,
+            4,
+            6,
+            5
+        ]
+    }
+}

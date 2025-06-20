@@ -5,10 +5,10 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.keras.layers import Activation, Dropout, Flatten, Dense
 from tensorflow.keras import backend as K
+
 # Add these imports for metrics
 from tensorflow.keras.metrics import Precision, Recall, AUC, BinaryAccuracy
 import matplotlib.pyplot as plt
-import numpy as np
 from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
 import seaborn as sns
 
