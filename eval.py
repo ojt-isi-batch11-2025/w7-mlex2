@@ -1,3 +1,4 @@
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
@@ -6,6 +7,52 @@ from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 import json
 import os
+
+# @tf.keras.saving.register_keras_serializable(package="custom_metrics")
+# class F1Score(tf.keras.metrics.Metric):
+#     def __init__(self, name='f1_score', **kwargs):
+#         super().__init__(name=name, **kwargs)
+#         self.precision = tf.keras.metrics.Precision()
+#         self.recall = tf.keras.metrics.Recall()
+        
+#     def update_state(self, y_true, y_pred, sample_weight=None):
+#         y_pred = tf.cast(tf.greater(y_pred, 0.5), tf.float32)
+#         self.precision.update_state(y_true, y_pred, sample_weight)
+#         self.recall.update_state(y_true, y_pred, sample_weight)
+        
+#     def reset_state(self):
+#         self.precision.reset_state()
+#         self.recall.reset_state()
+        
+#     def result(self):
+#         p = self.precision.result()
+#         r = self.recall.result()
+#         return tf.math.divide_no_nan(2 * p * r, p + r)
+        
+#     # Add get_config method for serialization
+#     def get_config(self):
+#         config = super().get_config()
+#         return config
+
+class F1Score(tf.keras.metrics.Metric):
+    def __init__(self, name='f1_score', **kwargs):
+        super().__init__(name=name, **kwargs)
+        self.precision = tf.keras.metrics.Precision()
+        self.recall = tf.keras.metrics.Recall()
+        
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        y_pred = tf.cast(tf.greater(y_pred, 0.5), tf.float32)
+        self.precision.update_state(y_true, y_pred, sample_weight)
+        self.recall.update_state(y_true, y_pred, sample_weight)
+        
+    def reset_state(self):
+        self.precision.reset_state()
+        self.recall.reset_state()
+        
+    def result(self):
+        p = self.precision.result()
+        r = self.recall.result()
+        return tf.math.divide_no_nan(2 * p * r, p + r)
 
 # You also need to define these variables that are used in your functions
 img_width, img_height = 150, 150
@@ -23,7 +70,8 @@ def evaluate_model(model_path, history_path=None):
     print(f"\n----- Model Evaluation for {model_path} -----")
     
     # Load the saved model
-    model = load_model(model_path)
+    custom_objects = {'F1Score': F1Score}
+    model = load_model(model_path, custom_objects=custom_objects)
     print("Model loaded successfully")
     
     # Load history if available
@@ -65,7 +113,7 @@ def evaluate_model(model_path, history_path=None):
     plt.xlabel('Predicted')
     plt.ylabel('True')
     plt.title('Confusion Matrix')
-    plt.savefig(f'{vis_dir}/confusion_matrix.png')
+    plt.savefig(f'{vis_dir}/eval-cm.png')
     plt.close()
     
     # If history is available, plot learning curves
@@ -92,7 +140,7 @@ def evaluate_model(model_path, history_path=None):
         plt.legend()
         
         plt.tight_layout()
-        plt.savefig(f'{vis_dir}/learning_curves.png')
+        plt.savefig(f'{vis_dir}/eval-learning-curves.png')
         plt.close()
         
         # Precision-Recall curves if available
@@ -106,7 +154,7 @@ def evaluate_model(model_path, history_path=None):
             plt.xlabel('Epoch')
             plt.ylabel('Score')
             plt.legend()
-            plt.savefig(f'{vis_dir}/precision_recall.png')
+            plt.savefig(f'{vis_dir}/eval-precision-recall.png')
             plt.close()
     
     # Print final metrics
