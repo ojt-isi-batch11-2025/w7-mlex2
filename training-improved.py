@@ -12,26 +12,7 @@ import os
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 import matplotlib.pyplot as plt
 from sklearn.model_selection import ParameterSampler
-
-class F1Score(tf.keras.metrics.Metric):
-    def __init__(self, name='f1_score', **kwargs):
-        super().__init__(name=name, **kwargs)
-        self.precision = tf.keras.metrics.Precision()
-        self.recall = tf.keras.metrics.Recall()
-        
-    def update_state(self, y_true, y_pred, sample_weight=None):
-        y_pred = tf.cast(tf.greater(y_pred, 0.5), tf.float32)
-        self.precision.update_state(y_true, y_pred, sample_weight)
-        self.recall.update_state(y_true, y_pred, sample_weight)
-        
-    def reset_state(self):
-        self.precision.reset_state()
-        self.recall.reset_state()
-        
-    def result(self):
-        p = self.precision.result()
-        r = self.recall.result()
-        return tf.math.divide_no_nan(2 * p * r, p + r)
+from f1score import F1Score
 
 # Create visualization directory
 vis_dir = 'visualizations'
@@ -47,7 +28,7 @@ train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
 nb_train_samples = 2000
 nb_validation_samples = 800
-epochs = 15  # Will be used in RandomizedSearchCV
+epochs = 15
 batch_size = 16
 
 if K.image_data_format() == 'channels_first':
@@ -148,7 +129,7 @@ param_grid = {
     'model__dense_units': [32, 64, 128, 256],
     'model__learning_rate': [0.0001, 0.001, 0.01, 0.1],
     'model__dropout_rate': [0.3, 0.4, 0.5, 0.6],
-    'epochs': [5, 10, 15, 20, 25, 30, 40],
+    'epochs': [5, 10, 15, 20],
     'batch_size': [10, 16, 20, 32, 64]
 }
 
@@ -171,7 +152,7 @@ random_search = RandomizedSearchCV(
 # This is just for the search process - final model will train on full dataset
 # Collect multiple batches to create a more representative dataset for hyperparameter tuning
 X_batches, y_batches = [], []
-num_batches = 25 # Collecting 10 batches (160 images with batch_size=16)
+num_batches = 25
 print(f"Collecting {num_batches} batches for hyperparameter tuning...")
 
 for i in range(num_batches):
@@ -241,26 +222,5 @@ for key in history.history:
     
 with open('mrs.history.json', 'w') as f:
     json.dump(history_dict, f)
-
-# Plot training & validation accuracy and loss values
-# plt.figure(figsize=(12, 5))
-# plt.subplot(1, 2, 1)
-# plt.plot(history.history['accuracy'])
-# plt.plot(history.history['val_accuracy'])
-# plt.title('Model accuracy')
-# plt.ylabel('Accuracy')
-# plt.xlabel('Epoch')
-# plt.legend(['Train', 'Validation'], loc='upper left')
-
-# plt.subplot(1, 2, 2)
-# plt.plot(history.history['loss'])
-# plt.plot(history.history['val_loss'])
-# plt.title('Model loss')
-# plt.ylabel('Loss')
-# plt.xlabel('Epoch')
-# plt.legend(['Train', 'Validation'], loc='upper left')
-
-# plt.tight_layout()
-# plt.savefig(os.path.join(vis_dir, 'train-model_training_history.png'))
 
 print("RandomizedSearchCV completed. Best model saved.")

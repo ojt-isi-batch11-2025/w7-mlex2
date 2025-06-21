@@ -8,51 +8,7 @@ import seaborn as sns
 import json
 import os
 
-# @tf.keras.saving.register_keras_serializable(package="custom_metrics")
-# class F1Score(tf.keras.metrics.Metric):
-#     def __init__(self, name='f1_score', **kwargs):
-#         super().__init__(name=name, **kwargs)
-#         self.precision = tf.keras.metrics.Precision()
-#         self.recall = tf.keras.metrics.Recall()
-        
-#     def update_state(self, y_true, y_pred, sample_weight=None):
-#         y_pred = tf.cast(tf.greater(y_pred, 0.5), tf.float32)
-#         self.precision.update_state(y_true, y_pred, sample_weight)
-#         self.recall.update_state(y_true, y_pred, sample_weight)
-        
-#     def reset_state(self):
-#         self.precision.reset_state()
-#         self.recall.reset_state()
-        
-#     def result(self):
-#         p = self.precision.result()
-#         r = self.recall.result()
-#         return tf.math.divide_no_nan(2 * p * r, p + r)
-        
-#     # Add get_config method for serialization
-#     def get_config(self):
-#         config = super().get_config()
-#         return config
-
-class F1Score(tf.keras.metrics.Metric):
-    def __init__(self, name='f1_score', **kwargs):
-        super().__init__(name=name, **kwargs)
-        self.precision = tf.keras.metrics.Precision()
-        self.recall = tf.keras.metrics.Recall()
-        
-    def update_state(self, y_true, y_pred, sample_weight=None):
-        y_pred = tf.cast(tf.greater(y_pred, 0.5), tf.float32)
-        self.precision.update_state(y_true, y_pred, sample_weight)
-        self.recall.update_state(y_true, y_pred, sample_weight)
-        
-    def reset_state(self):
-        self.precision.reset_state()
-        self.recall.reset_state()
-        
-    def result(self):
-        p = self.precision.result()
-        r = self.recall.result()
-        return tf.math.divide_no_nan(2 * p * r, p + r)
+from f1score import F1Score
 
 # You also need to define these variables that are used in your functions
 img_width, img_height = 150, 150
@@ -68,6 +24,7 @@ if not os.path.exists(vis_dir):
 # Function to evaluate and print metrics on validation data
 def evaluate_model(model_path, history_path=None):
     print(f"\n----- Model Evaluation for {model_path} -----")
+    model_name = os.path.basename(model_path).replace('.keras', '')
     
     # Load the saved model
     custom_objects = {'F1Score': F1Score}
@@ -113,7 +70,7 @@ def evaluate_model(model_path, history_path=None):
     plt.xlabel('Predicted')
     plt.ylabel('True')
     plt.title('Confusion Matrix')
-    plt.savefig(f'{vis_dir}/eval-cm.png')
+    plt.savefig(f'{vis_dir}/{model_name}-cm.png')
     plt.close()
     
     # If history is available, plot learning curves
@@ -140,7 +97,7 @@ def evaluate_model(model_path, history_path=None):
         plt.legend()
         
         plt.tight_layout()
-        plt.savefig(f'{vis_dir}/eval-learning-curves.png')
+        plt.savefig(f'{vis_dir}/{model_name}-learning-curves.png')
         plt.close()
         
         # Precision-Recall curves if available
@@ -154,7 +111,7 @@ def evaluate_model(model_path, history_path=None):
             plt.xlabel('Epoch')
             plt.ylabel('Score')
             plt.legend()
-            plt.savefig(f'{vis_dir}/eval-precision-recall.png')
+            plt.savefig(f'{vis_dir}/{model_name}-precision-recall.png')
             plt.close()
     
     # Print final metrics

@@ -2,6 +2,7 @@ from keras.models import load_model
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
+from f1score import F1Score
 
 from keras.preprocessing.image import img_to_array, load_img
 import numpy as np
@@ -15,7 +16,10 @@ input_shape = (img_width, img_height, 3)
 # -----------------------------------------------------------------------------
 # Load model
 # -----------------------------------------------------------------------------
-test_model = load_model('model.keras')
+test_model = load_model(
+    input("Enter the path to the saved model (default: 'model.keras'): "),
+    custom_objects={'F1Score': F1Score}  # Ensure to include custom metrics if used
+)
 
 # -----------------------------------------------------------------------------
 # Image data path
